@@ -1,7 +1,9 @@
 package client;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Scanner;
 
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
@@ -31,11 +33,30 @@ public class ProfileClient {
 			String name = "Hello";
 			musicProfile = MusicProfileHelper.narrow(ncRef.resolve_str(name));
 			
-			Calendar cal = Calendar.getInstance();
-        	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        	String now = sdf.format(cal.getTime());
-
-			/*String message = musicProfile.
+			
+			File file = new File("input.txt");
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNext()){
+				String functionName = scanner.next();
+				if (functionName.equals("getTimesPlayed")){
+					String song_id = scanner.next();
+					int played_count = musicProfile.getTimesPlayed(song_id);
+					System.out.println("song_id: "+song_id + " has been played " + played_count + "times");
+				}
+				if (functionName.equals("getTimesPlayedByUser")){
+					String user_id = scanner.next();
+					String song_id = scanner.next();
+					int played_count = musicProfile.getTimesPlayedByUser(user_id, song_id);
+					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
+				}
+				
+				
+			}
+        	
+        	
+        	
+        	//System.out.println("client got: " +message);
+			/*
 			DO SOMETHING
         	
 			System.out.println("Message from Server: " + message);
