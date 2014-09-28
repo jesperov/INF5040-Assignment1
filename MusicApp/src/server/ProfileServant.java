@@ -16,7 +16,7 @@ public class ProfileServant extends MusicProfilePOA {
 		Scanner scanner = null;
 		try {
 			File file = new File("C://train_triplets.txt");
-			scanner = new Scanner(file, "UTF-8");
+			scanner = new Scanner(file);
 			
 			
 			
@@ -25,7 +25,7 @@ public class ProfileServant extends MusicProfilePOA {
 				String user_id = scanner.next();
 				String song_id2 = scanner.next();
 				int played_count = scanner.nextInt();
-				System.out.println(song_id2);
+				//System.out.println(song_id2);
 				if (song_id.equals(song_id2)){
 					return played_count;
 				}
@@ -62,7 +62,29 @@ public class ProfileServant extends MusicProfilePOA {
 
 	@Override
 	public int getTimesPlayedByUser(String user_id, String song_id) {
-		// TODO Auto-generated method stub
+		Scanner scanner = null;
+		try {
+			File file = new File("C://train_triplets.txt");
+			scanner = new Scanner(file);
+			
+			
+			
+			while (scanner.hasNext()) {
+				
+				String user_id2 = scanner.next();
+				String song_id2 = scanner.next();
+				int played_count = scanner.nextInt();
+				//System.out.println(song_id2);
+				if (song_id.equals(song_id2) && user_id.equals(user_id2)){
+					return played_count;
+				}
+				
+			}
+			
+
+		} catch (Exception e) {
+
+		}
 		return 0;
 	}
 
