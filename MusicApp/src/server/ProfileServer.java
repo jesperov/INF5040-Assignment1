@@ -45,9 +45,11 @@ public class ProfileServer {
 			NameComponent path[] = ncRef.to_name(name);
 			ncRef.rebind(path, href);
 
-			System.out.println("HelloServer ready and waiting ...");
+			ProfileServant.createSongCache();
 
 			// wait for invocations from clients
+			
+			System.out.println("HelloServer ready and waiting ...");
 			orb.run();
 		}
 

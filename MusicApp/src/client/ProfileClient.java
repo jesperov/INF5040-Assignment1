@@ -3,6 +3,8 @@ package client;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.omg.CORBA.ORB;
@@ -18,8 +20,14 @@ public class ProfileClient {
 	/**
 	 * @param args
 	 */
+	
+	
+	
+	
 	public static void main(String[] args) {
 		try{
+			
+			
 			// create and initialize the ORB
 			ORB orb = ORB.init(args, null);
 
