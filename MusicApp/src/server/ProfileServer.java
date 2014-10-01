@@ -45,8 +45,9 @@ public class ProfileServer {
 			NameComponent path[] = ncRef.to_name(name);
 			ncRef.rebind(path, href);
 
-			ProfileServant.createSongCache();
-
+			//ProfileServant.createSongCache();
+			ProfileServant.createUserCache();
+			
 			// wait for invocations from clients
 			
 			System.out.println("HelloServer ready and waiting ...");

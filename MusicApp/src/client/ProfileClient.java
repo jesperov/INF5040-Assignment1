@@ -42,7 +42,7 @@ public class ProfileClient {
 			musicProfile = MusicProfileHelper.narrow(ncRef.resolve_str(name));
 			
 			
-			File file = new File("input.txt");
+			File file = new File("input-test.txt");
 			Scanner scanner = new Scanner(file);
 			while (scanner.hasNext()){
 				String functionName = scanner.next();
