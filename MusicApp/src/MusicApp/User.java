@@ -15,6 +15,7 @@ public abstract class User implements org.omg.CORBA.portable.StreamableValue
 {
   public String id = null;
   public List<Song> songs = null;
+  public int total_play_count=0;
   
   private static String[] _truncatable_ids = {
     MusicApp.UserHelper.id ()

@@ -1,6 +1,7 @@
 package client;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,26 +43,36 @@ public class ProfileClient {
 			musicProfile = MusicProfileHelper.narrow(ncRef.resolve_str(name));
 			
 			
-			File file = new File("input-test.txt");
-			Scanner scanner = new Scanner(file);
+			File inputFile = new File("input.txt");
+			Scanner scanner = new Scanner(inputFile);
+			
+			File file1 = new File("getTimesPlayed_output.txt");
+			PrintWriter pw1 = new PrintWriter(file1);
+			
+			File file2 = new File("getTimesPlayedByUser_output.txt");
+			PrintWriter pw2 = new PrintWriter(file2);
+			
 			while (scanner.hasNext()){
 				String functionName = scanner.next();
 				if (functionName.equals("getTimesPlayed")){
 					String song_id = scanner.next();
 					int played_count = musicProfile.getTimesPlayed(song_id);
+					pw1.println("song_id: "+song_id + " has been played " + played_count + "times");
 					System.out.println("song_id: "+song_id + " has been played " + played_count + "times");
 				}
 				if (functionName.equals("getTimesPlayedByUser")){
 					String user_id = scanner.next();
 					String song_id = scanner.next();
+					
 					int played_count = musicProfile.getTimesPlayedByUser(user_id, song_id);
+					pw2.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
 					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
 				}
-				
-				
 			}
-        	
-        	
+        	scanner.close();
+        	pw1.close();
+        	pw2.close();
+        	System.out.println("Client is done");
         	
         	//System.out.println("client got: " +message);
 			/*
