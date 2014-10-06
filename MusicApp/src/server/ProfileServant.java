@@ -108,8 +108,18 @@ public class ProfileServant extends MusicProfilePOA {
 	public int getUserProfile(String user_id, String song_id, UserHolder userHolder) {//#########################
 		UserImpl user = userMap.get(user_id);//checck the cache first
 		if (user != null) {
+			
+			
+			try {
+				Thread.sleep(60);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			userHolder.value=user;
-			return userHolder.value.total_play_count;
+			int play_count = user.get_song(song_id).play_count;
+			return play_count;
 		}
 		
 		Scanner scanner = null;
@@ -127,9 +137,26 @@ public class ProfileServant extends MusicProfilePOA {
 			String user_id2 = scanner.next();
 			String song_id2 = scanner.next();
 			int played_count = scanner.nextInt(); // System.out.println(song_id2);
-			if (song_id.equals(song_id2) && user_id.equals(user_id2)) {
+			
+			if (user_id.equals(user_id2)) {//if we hit the user go into another loop
 				
-				userHolder = new UserHolder(user);
+				UserImpl user2 = new UserImpl(user_id2);//where we create a new user and adds the first song
+				user2.addSong(new SongImpl(song_id2, played_count));
+				
+				String user_id3=user_id2;
+				while (scanner.hasNext() && user_id2.equals(user_id3)){//add every song for this user
+					user_id3 = scanner.next();
+					song_id2 =scanner.next();
+					int played_count2 = scanner.nextInt();
+					user2.addSong(new SongImpl(song_id2,played_count2));
+					
+					if (song_id.equals(song_id2)){//if the song_id is equal to the one on file, we want to return this played_count
+						played_count = played_count2;
+					}
+					
+				}
+				
+				userHolder.value = user2;
 				return played_count;
 			}
 

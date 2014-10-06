@@ -57,12 +57,14 @@ public class ProfileClient {
 			long startTime = System.currentTimeMillis();
 			while (scanner.hasNext()){
 				String functionName = scanner.next();
-				/*
+				
 				if (functionName.equals("getTimesPlayed")){
 					String song_id = scanner.next();
+					
 					int played_count = musicProfile.getTimesPlayed(song_id);
 					pw1.println("song_id: "+song_id + " has been played " + played_count + "times");
 					System.out.println("song_id: "+song_id + " has been played " + played_count + "times");
+					
 				}/*
 				if (functionName.equals("getTimesPlayedByUser")){//this is for the getTimesPlayedByUser function
 					String user_id = scanner.next();
@@ -77,28 +79,38 @@ public class ProfileClient {
 					String song_id = scanner.next();
 					
 					UserImpl user = null;
+					int played_count=-1;
 					if (userMap.containsKey(user_id)){
 						user = (UserImpl)userMap.get(user_id);
+						played_count = user.get_song(song_id).play_count;
 					}else{
 						UserHolder userHolder = new UserHolder();
-						int played_count = musicProfile.getUserProfile(user_id, song_id, userHolder);
+						played_count = musicProfile.getUserProfile(user_id, song_id, userHolder);
 						user = (UserImpl)userHolder.value;
 						userMap.put(user_id, user);
 					}
 					
 					pw3.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + user.get_song(song_id).play_count + "times");
-					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + user.get_song(song_id).play_count + "times");
+					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + user.get_song(song_id).play_count + "times or " + played_count);
 					
 					
 				}
 			}
 			
+			long endTime = System.currentTimeMillis();
+			long runtime = (endTime-startTime);
+        	System.out.println("Client ran for: " + runtime + " ms");
+			
+			pw1.println("Client ran for: " + runtime + " ms");
+			pw2.println("Client ran for: " + runtime + " ms");
+			pw3.println("Client ran for: " + runtime + " ms");
+			
         	scanner.close();
         	pw1.close();
         	pw2.close();
+        	pw3.close();
         	
-        	long endTime = System.currentTimeMillis();
-        	System.out.println("Client ran for: " + (endTime-startTime) + " ms");
+        	
 			
 			System.out.println("Client is done");
 			
