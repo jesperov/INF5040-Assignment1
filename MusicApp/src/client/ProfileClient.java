@@ -2,8 +2,6 @@ package client;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -14,6 +12,9 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import MusicApp.MusicProfile;
 import MusicApp.MusicProfileHelper;
+import MusicApp.User;
+import MusicApp.UserHolder;
+import MusicApp.UserImpl;
 
 public class ProfileClient {
 
@@ -21,10 +22,8 @@ public class ProfileClient {
 	/**
 	 * @param args
 	 */
-	
-	
-	
-	
+	static Map<String, User> userMap = new HashMap<String, User>();
+
 	public static void main(String[] args) {
 		try{
 			
@@ -52,34 +51,57 @@ public class ProfileClient {
 			File file2 = new File("getTimesPlayedByUser_output.txt");
 			PrintWriter pw2 = new PrintWriter(file2);
 			
+			File file3 = new File("getUserProfile_output.txt");
+			PrintWriter pw3 = new PrintWriter(file3);
+			
+			long startTime = System.currentTimeMillis();
 			while (scanner.hasNext()){
 				String functionName = scanner.next();
+				/*
 				if (functionName.equals("getTimesPlayed")){
 					String song_id = scanner.next();
 					int played_count = musicProfile.getTimesPlayed(song_id);
 					pw1.println("song_id: "+song_id + " has been played " + played_count + "times");
 					System.out.println("song_id: "+song_id + " has been played " + played_count + "times");
-				}
-				if (functionName.equals("getTimesPlayedByUser")){
+				}/*
+				if (functionName.equals("getTimesPlayedByUser")){//this is for the getTimesPlayedByUser function
+					String user_id = scanner.next();
+					String song_id = scanner.next();
+					int played_count = musicProfile.getTimesPlayedByUser(user_id, song_id);
+					
+					pw2.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
+					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
+				}*/
+				if (functionName.equals("getTimesPlayedByUser")){//this is for the getProfile function
 					String user_id = scanner.next();
 					String song_id = scanner.next();
 					
-					int played_count = musicProfile.getTimesPlayedByUser(user_id, song_id);
-					pw2.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
-					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + played_count + "times");
+					UserImpl user = null;
+					if (userMap.containsKey(user_id)){
+						user = (UserImpl)userMap.get(user_id);
+					}else{
+						UserHolder userHolder = new UserHolder();
+						int played_count = musicProfile.getUserProfile(user_id, song_id, userHolder);
+						user = (UserImpl)userHolder.value;
+						userMap.put(user_id, user);
+					}
+					
+					pw3.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + user.get_song(song_id).play_count + "times");
+					System.out.println("user_id: "+user_id + " song_id: "+song_id + " has been played " + user.get_song(song_id).play_count + "times");
+					
+					
 				}
 			}
+			
         	scanner.close();
         	pw1.close();
         	pw2.close();
-        	System.out.println("Client is done");
         	
-        	//System.out.println("client got: " +message);
-			/*
-			DO SOMETHING
-        	
-			System.out.println("Message from Server: " + message);
-			*/
+        	long endTime = System.currentTimeMillis();
+        	System.out.println("Client ran for: " + (endTime-startTime) + " ms");
+			
+			System.out.println("Client is done");
+			
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e) ;
 			e.printStackTrace(System.out);

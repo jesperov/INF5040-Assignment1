@@ -32,8 +32,9 @@ public abstract class User implements org.omg.CORBA.portable.StreamableValue
     this.id = istream.read_string ();
     int _len0 = istream.read_long ();
     this.songs = new ArrayList<Song>();
-    for (int _o1 = 0;_o1 < this.songs.size(); ++_o1)
+    for (int _o1 = 0;_o1 < _len0; ++_o1)
       this.songs.add( MusicApp.SongHelper.read (istream));
+    this.total_play_count = istream.read_long();
   }
 
   public void _write (org.omg.CORBA.portable.OutputStream ostream)
@@ -42,6 +43,7 @@ public abstract class User implements org.omg.CORBA.portable.StreamableValue
     ostream.write_long (this.songs.size());
     for (int _i0 = 0;_i0 < this.songs.size(); ++_i0)
       MusicApp.SongHelper.write (ostream, this.songs.get(_i0));
+    ostream.write_long(this.total_play_count);
   }
 
   public org.omg.CORBA.TypeCode _type ()

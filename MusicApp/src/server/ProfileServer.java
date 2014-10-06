@@ -46,8 +46,8 @@ public class ProfileServer {
 			ncRef.rebind(path, href);
 
 			//ProfileServant.createSongCache()
-			ProfileServant.createSongCache();;
-			ProfileServant.createUserCache();
+			ProfileServant.init();
+			ProfileServant.createUserAndSongCache();
 			
 			
 			// wait for invocations from clients

@@ -24,13 +24,19 @@ public class ProfileServant extends MusicProfilePOA {
 
 	static Map<String, Integer> songMap;// cache for the songs
 	static Map<String, UserImpl> userMap;// cache for users
-
+	
+	public static void init(){
+		songMap = new HashMap<String, Integer>();
+		userMap = new HashMap<String, UserImpl>();
+	}
+	
 	@Override
 	public int getTimesPlayed(String song_id) {
 
+		
 		if (songMap.containsKey(song_id)) {// check the cache first
 			try {
-				Thread.currentThread().sleep(60);
+				Thread.sleep(60);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -55,7 +61,7 @@ public class ProfileServant extends MusicProfilePOA {
 			}
 
 		} catch (Exception e) {
-
+			System.out.println(e);
 		}
 		return 0;
 	}
@@ -65,6 +71,12 @@ public class ProfileServant extends MusicProfilePOA {
 
 		UserImpl user = userMap.get(user_id);//checck the cache first
 		if (user != null) {
+			try {
+				Thread.sleep(60);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return user.get_song(song_id).play_count;
 		}
 
@@ -96,10 +108,10 @@ public class ProfileServant extends MusicProfilePOA {
 	public int getUserProfile(String user_id, String song_id, UserHolder userHolder) {//#########################
 		UserImpl user = userMap.get(user_id);//checck the cache first
 		if (user != null) {
-			userHolder = new UserHolder(user);
-			return user.get_song(song_id).play_count;
+			userHolder.value=user;
+			return userHolder.value.total_play_count;
 		}
-
+		
 		Scanner scanner = null;
 
 		try {
@@ -122,11 +134,13 @@ public class ProfileServant extends MusicProfilePOA {
 			}
 
 		}
+		
 		return 0;
+		
 	}
 
 	public static void createSongCache() {
-		songMap = new HashMap<String, Integer>();
+		songMap.clear();
 
 		Scanner scanner = null;
 		
@@ -225,14 +239,87 @@ public class ProfileServant extends MusicProfilePOA {
 		}
 		System.out.println("/nUSER CACHE;");
 
-		userMap = new HashMap<String, UserImpl>();
+		userMap.clear();
 
 		for (UserImpl it : userList) {
 			userMap.put(it.get_id(), it);
-			System.out.println(it.get_total_play_count());
+			System.out.println("user id: " + it.id + " playcount: " + it.get_total_play_count());
 		}
 		userList.clear();
 		System.out.println("Created user cache with size: "+userMap.size());
+
+	}
+	
+	public static void createUserAndSongCache(){
+		userMap.clear();
+		songMap.clear();
+		
+		List<UserImpl> userList = new ArrayList<UserImpl>();
+
+		Scanner scanner = null;
+
+		System.out.println("Creating user and song cache...");
+
+		long totalSize=0;
+		long currentSize=0;
+		
+		try {
+			File file = new File("C://train_triplets.txt");
+			totalSize = file.length();
+			scanner = new Scanner(file);
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		String old_user_id = "";
+		UserImpl user = null;
+
+		while (scanner.hasNext()) {
+
+			String user_id = scanner.next();
+			String song_id = scanner.next();
+			int played_count = scanner.nextInt();
+			
+			currentSize += user_id.length();
+			currentSize += song_id.length();
+			currentSize += 4;//int is 4 bytes long
+
+			//song cache
+			if (songMap.get(song_id) == null) {
+				songMap.put(song_id, played_count);
+			} else {
+				songMap.put(song_id, songMap.get(song_id) + played_count);
+			}
+			//song cache end
+			
+			if (old_user_id.equals(user_id)) {
+				user.addSong(new SongImpl(song_id, played_count));
+
+			} else {
+				insertIntoSortedList(userList, user);
+
+				user = new UserImpl(user_id);
+				old_user_id = user_id;
+
+				user.addSong(new SongImpl(song_id, played_count));
+				
+			}
+			float percentageDone = (float)(100*(double)currentSize/(double)totalSize);
+			
+			if ((int)percentageDone+0.000001 >= percentageDone )//just a way to not print it too often
+				System.out.println((int)percentageDone + "%");
+			
+		}
+
+
+
+		for (UserImpl it : userList) {
+			userMap.put(it.get_id(), it);
+		}
+		userList.clear();
+		System.out.println("Created user cache with size: "+userMap.size());
+		System.out.println("Created song cache with size: "+songMap.size());
 
 	}
 
